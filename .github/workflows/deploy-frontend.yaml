@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      
 
 jobs:
   deploy:
@@ -20,15 +19,15 @@ jobs:
 
           cd /home/karthik
 
-          if [ ! -d "Logistic-Management-System-Frontend" ]; then
+          # If repo does not exist, clone it
+          if [ ! -d "Logistic-Management-System-Frontend/.git" ]; then
+            rm -rf Logistic-Management-System-Frontend || true
             git clone git@github.com:saichithra123/logistics-management.git Logistic-Management-System-Frontend
           fi
 
           cd Logistic-Management-System-Frontend
 
-          git fetch origin
-          git checkout ${{ github.ref_name }} || git checkout -b ${{ github.ref_name }} origin/${{ github.ref_name }}
-          git pull origin ${{ github.ref_name }}
+          git pull origin main
 
           docker stop logistics-frontend || true
           docker rm logistics-frontend || true
