@@ -1,53 +1,37 @@
-name: Deploy Logistics Frontend to QA
+name: Deploy Frontend to QA
 
 on:
   push:
     branches:
-      
       - main
+      
 
 jobs:
   deploy:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Deploy Frontend on QA server
         run: |
           set -e
 
-          echo "Running as:"
-          whoami
-          hostname
-
           cd /home/karthik
 
-          # Clone repo if not present
-          if [ ! -d "logistics-management-chithralogistics" ]; then
-            git clone git@github.com:AshwiniMallela/logistics-management-chithralogistics.git
+          if [ ! -d "Logistic-Management-System-Frontend" ]; then
+            git clone git@github.com:saichithra123/logistics-management.git Logistic-Management-System-Frontend
           fi
 
-          cd logistics-management-chithralogistics
+          cd Logistic-Management-System-Frontend
 
           git fetch origin
           git checkout ${{ github.ref_name }} || git checkout -b ${{ github.ref_name }} origin/${{ github.ref_name }}
           git pull origin ${{ github.ref_name }}
 
-          echo "Stopping existing container..."
-
           docker stop logistics-frontend || true
           docker rm logistics-frontend || true
 
-          echo "Building Docker image..."
-
           docker build -t logistics-frontend .
-
-          echo "Starting container..."
-
-          docker run -d \
-            --name logistics-frontend \
-            -p 3000:80 \
-            --restart unless-stopped \
-            logistics-frontend
+          docker run -d --name logistics-frontend -p 3000:80 logistics-frontend
