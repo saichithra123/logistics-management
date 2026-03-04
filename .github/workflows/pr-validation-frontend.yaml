@@ -1,0 +1,31 @@
+name: Frontend PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+      - sprint1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup Node
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Build React app
+      - name: Build project
+        run: npm run build
